@@ -31,6 +31,8 @@ jobs:
       run: ./gtk-osx-setup.sh
       shell: bash
 
+    - run: cp jhbuildrc ~/.config/jhbuildrc
+
     - run: ~/.new_local/bin/jhbuild bootstrap
     - run: ~/.new_local/bin/jhbuild bootstrap-gtk-osx
     - run: ~/.new_local/bin/jhbuild build meta-gtk-osx-bootstrap meta-gtk-osx-gtk3
