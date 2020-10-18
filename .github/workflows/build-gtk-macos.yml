@@ -31,6 +31,9 @@ jobs:
       run: ./gtk-osx-setup.sh
       shell: bash
 
+    - name: patch zlib
+      run: sed -i.bak 's/<autotools id="zlib" autogen-sh="configure">/<autotools id="zlib" autogen-sh="configure" supports-unknown-configure-options="false">/' ~/Source/jhbuild/modulesets/bootstrap.modules
+
     - run: cp jhbuildrc ~/.config/jhbuildrc
 
     - run: ~/.new_local/bin/jhbuild bootstrap
