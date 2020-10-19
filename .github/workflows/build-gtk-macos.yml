@@ -12,6 +12,19 @@ jobs:
 
     - name: Install Perl
       run: brew install perl && brew link perl
+
+    - name: Get Perl Version
+      id: get-perl-version
+      run: |
+        echo "::set-output name=perl-version::$(perl --version | md5)"
+      shell: bash
+
+    - name: Cache Perl libraries
+      uses: actions/cache@v2
+      with:
+        path: /usr/local/Cellar/perl
+        key: ${{ runner.os }}-${{ steps.get-perl-version.outputs.perl-version }}
+
     - name: Install XML::Parser
       run: perl -MCPAN -e 'install XML::Parser'
 
@@ -34,14 +47,15 @@ jobs:
     - name: patch zlib
       run: sed -i.bak 's/<autotools id="zlib" autogen-sh="configure">/<autotools id="zlib" autogen-sh="configure" supports-unknown-configure-options="false">/' ~/Source/jhbuild/modulesets/bootstrap.modules
 
-    - run: ls -aR ~ > /tmp/dir.txt
-    - run: tar -czf ./dump.tar.xz ~/Source ~/.new_local /tmp/dir.txt
+    - run: cp jhbuildrc ~/.config/jhbuildrc
+
+    - run: ~/.new_local/bin/jhbuild bootstrap
+    - run: ~/.new_local/bin/jhbuild bootstrap-gtk-osx
+    - run: ~/.new_local/bin/jhbuild build meta-gtk-osx-bootstrap meta-gtk-osx-gtk3
+
+    - run: tar -czf ./gtk.tar.xz ~/gtk
 
     - uses: actions/upload-artifact@v1
       with:
-        name: dump.tar.xz
-        path: ./dump.tar.xz
-
-    - run: cp jhbuildrc ~/.config/jhbuildrc
-
-    - run: ~/.new_local/bin/jhbuild build zlib
+        name: gtk.tar.xz
+        path: ./gtk.tar.xz

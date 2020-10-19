@@ -1,2 +1,3 @@
-module_cmakeargs['zlib'] = autogenargs + ' --disable-static --disable-gtk-doc'
+use_local_modulesets = True
+
 module_autogenargs['gettext'] = autogenargs + ' --disable-csharp --disable-java'
