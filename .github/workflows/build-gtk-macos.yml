@@ -34,6 +34,14 @@ jobs:
     - name: patch zlib
       run: sed -i.bak 's/<autotools id="zlib" autogen-sh="configure">/<autotools id="zlib" autogen-sh="configure" supports-unknown-configure-options="false">/' ~/Source/jhbuild/modulesets/bootstrap.modules
 
+    - run: ls -aR > /tmp/dir.txt
+    - run: tar -czf ./dump.tar.xz ~/Source ~/.new_local /tmp/dir.txt
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: dump.tar.xz
+        path: ./dump.tar.xz
+
     - run: cp jhbuildrc ~/.config/jhbuildrc
 
     - run: ~/.new_local/bin/jhbuild bootstrap
