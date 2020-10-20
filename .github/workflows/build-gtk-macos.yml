@@ -47,6 +47,7 @@ jobs:
     - run: cp jhbuildrc ~/.config/jhbuildrc-custom
 
     - run: ~/.new_local/bin/jhbuild bootstrap-gtk-osx
+    - run: ~/.new_local/bin/jhbuild buildone -afc harfbuzz
     - run: ~/.new_local/bin/jhbuild build meta-gtk-osx-bootstrap meta-gtk-osx-gtk3
 
     - run: tar -czf ./gtk.tar.xz ~/gtk
