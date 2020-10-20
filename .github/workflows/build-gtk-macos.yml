@@ -49,13 +49,4 @@ jobs:
 
     - run: cp jhbuildrc ~/.config/jhbuildrc
 
-    - run: ~/.new_local/bin/jhbuild bootstrap
-    - run: ~/.new_local/bin/jhbuild bootstrap-gtk-osx
-    - run: ~/.new_local/bin/jhbuild build meta-gtk-osx-bootstrap meta-gtk-osx-gtk3
-
-    - run: tar -czf ./gtk.tar.xz ~/gtk
-
-    - uses: actions/upload-artifact@v1
-      with:
-        name: gtk.tar.xz
-        path: ./gtk.tar.xz
+    - run: ~/.new_local/bin/jhbuild build zlib
