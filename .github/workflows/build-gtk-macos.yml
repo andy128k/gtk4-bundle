@@ -10,12 +10,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Bump pipenv
-      run: brew install gtk+3
-
-    - run: tar -czf ./gtk.tar.xz /usr/local/opt
+    - run: brew install gtk+3
+    - run: brew info --json=v1 gtk+3
+    - run: ./grab.py
 
     - uses: actions/upload-artifact@v1
       with:
-        name: gtk.tar.xz
-        path: ./gtk.tar.xz
+        name: gtk.tar
+        path: ./gtk.tar

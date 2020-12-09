@@ -1,3 +1,0 @@
-# use_local_modulesets = True
-
-module_autogenargs['gettext'] = autogenargs + ' --disable-csharp --disable-java'
