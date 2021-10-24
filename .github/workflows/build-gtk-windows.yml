@@ -1,11 +1,12 @@
-name: Release macos bundle
+name: Release Windows bundle
 
 on: [push]
 
 jobs:
   build:
+    if: ${{ false }}
 
-    runs-on: macos-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -14,18 +15,19 @@ jobs:
       run: |
         BRANCH=`cat ./BRANCH`
         git clone --branch $BRANCH --depth 1 https://gitlab.gnome.org/GNOME/gtk.git
+      shell: bash
 
     - name: install meson
-      run: brew install llvm meson ninja
+      run: choco install meson ninja
 
     - name: setup
       run: |
         cd gtk
-        meson setup build -Dbuild-tests=false -Dmacos-backend=true -Dx11-backend=false -Dmedia-gstreamer=disabled
+        meson setup build -Dbuild-tests=false -Dmedia-gstreamer=disabled
 
-    - run: meson introspect --dependencies gtk/build
-    - run: meson compile -C gtk/build
-    - run: meson install -C gtk/build
+    - run: meson introspect --dependencies gtk\build
+    - run: meson compile -C gtk\build
+    - run: meson install -C gtk\build
 
     - name: archive
       run: |
