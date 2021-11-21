@@ -20,8 +20,9 @@ jobs:
 
     - name: setup
       run: |
+        export INSTALL_PATH=`pwd`/gtk4
         cd gtk
-        meson setup build -Dbuild-tests=false -Dmacos-backend=true -Dx11-backend=false -Dmedia-gstreamer=disabled
+        meson setup build --prefix=$INSTALL_PATH --libdir=lib -Dcpp_std=c++11 -Dbuild-tests=false -Dmacos-backend=true -Dx11-backend=false -Dmedia-gstreamer=disabled
 
     - run: meson introspect --dependencies gtk/build
     - run: meson compile -C gtk/build
@@ -29,8 +30,8 @@ jobs:
 
     - name: archive
       run: |
-        tar -czvf gtk.tar.gz ./tar
+        tar -czvf gtk4.tar.gz ./gtk4
 
     - uses: softprops/action-gh-release@v1
       with:
-        files: gtk.tar.gz
+        files: gtk4.tar.gz
