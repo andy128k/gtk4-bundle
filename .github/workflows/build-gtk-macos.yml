@@ -1,0 +1,60 @@
+name: Release macOS bundle
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install build tools
+      run: |
+        brew install llvm bison gobject-introspection meson ninja
+        echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
+
+    - name: Checkout Gtk
+      run: |
+        BRANCH=`cat ./BRANCH`
+        git clone --branch $BRANCH --depth 1 https://gitlab.gnome.org/GNOME/gtk.git
+
+    - name: Setup build
+      run: |
+        export INSTALL_PATH=`pwd`/gtk4
+        cd gtk
+        meson setup build \
+          --prefix=$INSTALL_PATH \
+          --libdir=lib \
+          --wrap-mode=forcefallback \
+          -Dbuildtype=release \
+          -Dcpp_std=c++11 \
+          -Dharfbuzz:coretext=enabled \
+          -Dglib:tests=false \
+          -Dpixman:tests=disabled \
+          -Dbuild-tests=false \
+          -Ddemos=false \
+          -Dmacos-backend=true \
+          -Dx11-backend=false \
+          -Dmedia-gstreamer=disabled
+
+    - name: Print options
+      run: meson configure gtk/build
+
+    - run: meson introspect --dependencies gtk/build
+
+    - run: meson compile -C gtk/build
+
+    - run: meson install -C gtk/build
+
+    - name: Archive
+      id: archive
+      run: |
+        BRANCH=`cat ./BRANCH`
+        tar -czvf gtk4-macos-$BRANCH.tar.gz ./gtk4
+
+    - uses: softprops/action-gh-release@v1
+      with:
+        files: gtk4-macos-*.tar.gz
